@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>从一个主页到四个站点:DX Agent 建站实录 · DX Agent 博客</title>
+  <meta name="description" content="记录 DX Agent 主站与博客、应用、项目三个子站的搭建过程:纯静态技术选型、构建脚本、Cloudflare Pages 托管方案与可访问性考虑。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191716'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='%23faf9f6' text-anchor='middle'%3EDX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../site.css">
+  <script src="../../main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="https://dxagent.cloud/" aria-label="DX Agent 主页">
+        <span class="brand-mark" aria-hidden="true">DX</span>
+        <span class="brand-name">DX Agent</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-nav-toggle>
+          <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+          <span class="nav-toggle-label">菜单</span>
+        </button>
+        <div class="nav-panel" data-nav-panel id="site-menu">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="https://dxagent.cloud/">主页</a></li>
+            <li><a class="nav-link" href="https://projects.dxagent.cloud/">项目</a></li>
+            <li><a class="nav-link" href="../../" aria-current="true">博客</a></li>
+            <li><a class="nav-link" href="https://apps.dxagent.cloud/">应用</a></li>
+            <li>
+              <a class="nav-link nav-link-external" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="page-hero" id="top" aria-labelledby="article-title">
+      <div class="container">
+        <nav aria-label="面包屑">
+          <ol class="crumbs hero-item">
+            <li><a href="../../">博客</a></li>
+            <li><span aria-current="page">建站实录</span></li>
+          </ol>
+        </nav>
+        <div class="article-head">
+          <p class="eyebrow hero-item">DX Agent · 博客</p>
+          <h1 class="article-title hero-item" id="article-title">从一个主页到四个站点:DX Agent 建站实录</h1>
+          <p class="article-meta hero-item">
+            <time datetime="2026-10-01">2026 年 10 月 1 日</time>
+            <span>分类:建站</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="article-section" aria-label="文章正文">
+      <div class="container">
+        <div class="prose">
+          <p>DX Agent 的代码按四个站点组织：<a href="https://dxagent.cloud/">主页</a>、<a href="https://projects.dxagent.cloud/">项目站</a>、<a href="https://blog.dxagent.cloud/">博客</a>与<a href="https://apps.dxagent.cloud/">应用站</a>。这篇文章记录源码结构、构建方式与托管方案，方便有类似需求的人参考。</p>
+
+          <h2>为什么不止一个主页</h2>
+          <p>这次建站需要同时展示 GitHub 账号 <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">ouyang-2019</a> 名下的公开项目、发布技术长文，并提供可直接使用的小工具。把这些内容都放在一个页面，会让导航和后续维护变得复杂。</p>
+          <p>因此按用途安排四个站点：主页放概览与入口；项目站给每个项目一页完整说明；博客承载像本文这样的长文；应用站存放纯前端的小工具。四个站点共享同一套设计语言，访客可以沿着导航在子域之间切换。</p>
+
+          <h2>技术选型:纯静态,零依赖</h2>
+          <p>四个站点全部使用原生 HTML、CSS 与 JavaScript 写就,不引入任何框架、构建链之外的依赖、外部字体、CDN 或图标库。页面用到的图标全部是内联 SVG。</p>
+          <p>这个选择基于几个可以直接验证的事实:</p>
+          <ul>
+            <li>站点没有自建登录、评论或跟踪脚本，主要内容在构建时就是确定的；</li>
+            <li>不引入第三方前端包，减少了依赖升级与供应链审查的负担；</li>
+            <li>各站共享核心样式与导航脚本，应用工具再使用独立的本地脚本。</li>
+          </ul>
+          <p>代价是缺少组件化抽象,四个站点的页头页脚是手工保持一致的。对这个规模的站点来说,这是可以接受的取舍。</p>
+
+          <h2>一个仓库,四个站点</h2>
+          <p>所有站点的源码都在同一个仓库里,源码与页面内容托管在 <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">GitHub 账号 ouyang-2019</a> 下。仓库里只有一个 <code>public/</code> 目录:根层级是主页,<code>blog/</code>、<code>apps/</code>、<code>projects/</code> 三个子目录各是一个子站。</p>
+          <p>构建脚本是仓库根目录下的 <code>scripts/build.mjs</code>,本地执行:</p>
+          <pre><code>node scripts/build.mjs</code></pre>
+          <p>它把 <code>public/</code> 拆分成 <code>dist/</code> 下的四个站点目录:主页文件进入 <code>dist/home</code>,三个子站目录分别复制到 <code>dist/blog</code>、<code>dist/apps</code>、<code>dist/projects</code>,并把共享的 <code>styles.css</code> 与 <code>main.js</code> 放进每个站点根部。这样每个子站都可以被独立部署,又共享同一套样式与交互。</p>
+          <p>本地预览任意一个站点,只需要指向对应目录的静态服务,例如:</p>
+          <pre><code>python -m http.server 4173 --directory dist/blog</code></pre>
+
+          <h2>托管方案:Cloudflare Pages</h2>
+          <p>仓库的部署计划是在 Cloudflare Pages 中为同一 GitHub 仓库创建四个项目。每个项目的构建命令都是 <code>node scripts/build.mjs</code>；发布目录按站点分别填写 <code>dist/home</code>、<code>dist/blog</code>、<code>dist/apps</code> 和 <code>dist/projects</code>。先检查各项目的预览地址，再在对应项目中绑定 <code>dxagent.cloud</code> 或其子域。具体设置参考 <a href="https://developers.cloudflare.com/pages/configuration/monorepos/" target="_blank" rel="noopener noreferrer">Cloudflare Pages 多项目文档</a>和<a href="https://developers.cloudflare.com/pages/configuration/custom-domains/" target="_blank" rel="noopener noreferrer">自定义域名文档</a>。</p>
+          <p>切换域名解析前，还应核对 Cloudflare 中已有的 DNS 记录，尤其是仍在使用的邮件 MX 与 TXT 记录，避免站点上线影响其他服务。</p>
+
+          <h2>设计与可访问性</h2>
+          <p>视觉上,四个站点沿用同一套「编辑感」的设计语言:克制的纸色与墨色配色、单一强调色、等宽字体的标签与元信息、纯 CSS 渐变的网格背景。共享样式表只维护一份,各子站再以独立的 <code>site.css</code> 覆盖自己的布局,避免四份样式渐行渐远。</p>
+          <p>可访问性不是事后补救,而是一组在编写时就定下的约束,每个页面都满足:</p>
+          <ul>
+            <li>语义化地标与正确的标题层级,每个页面都有「跳转到主要内容」链接;</li>
+            <li>键盘可到达的所有控件都有清晰可见的焦点框;</li>
+            <li>主要按钮与导航控件设有适合触控的点击区域，移动端菜单在没有 JavaScript 时也会展开为完整导航；</li>
+            <li>尊重系统的「减少动态」偏好,滚动渐入与首屏动效在该偏好下自动关闭;</li>
+            <li>响应式布局覆盖 360px 手机、768px 平板与桌面宽屏。</li>
+          </ul>
+
+          <h2>接下来</h2>
+          <p>站点结构到此就位。博客接下来会围绕 <a href="https://projects.dxagent.cloud/">项目站</a> 中各项目的真实开发进展更新;应用站也会在有新的可用工具时补充。本文描述的所有文件与脚本都可以在 GitHub 上查阅,欢迎对照验证。</p>
+
+          <div class="article-nav">
+            <a class="btn btn-primary" href="../../">
+              返回博客首页
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/ouyang-2019/dxagent-website" target="_blank" rel="noopener noreferrer">
+              在 GitHub 上查看源码
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-line">© 2026 DX Agent · <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">github.com/ouyang-2019</a></p>
+      <a class="footer-top" href="#top">回到顶部
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+      </a>
+      <nav class="footer-sites" aria-label="站点导航">
+        <a href="https://dxagent.cloud/">主页</a>
+        <a href="https://projects.dxagent.cloud/">项目</a>
+        <a href="../../" aria-current="page">博客</a>
+        <a href="https://apps.dxagent.cloud/">应用</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

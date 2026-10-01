@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool Calling 不是插件魔法:它是接口设计 · DX Agent 博客</title>
+  <meta name="description" content="面向个人开发者的 Tool Calling 长文:函数 schema、工具选择、权限边界、错误恢复、并行调用与可观测性。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191716'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='%23faf9f6' text-anchor='middle'%3EDX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../site.css">
+  <script src="../../main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="https://dxagent.cloud/" aria-label="DX Agent 主页">
+        <span class="brand-mark" aria-hidden="true">DX</span>
+        <span class="brand-name">DX Agent</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-nav-toggle>
+          <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+          <span class="nav-toggle-label">菜单</span>
+        </button>
+        <div class="nav-panel" data-nav-panel id="site-menu">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="https://dxagent.cloud/">主页</a></li>
+            <li><a class="nav-link" href="https://projects.dxagent.cloud/">项目</a></li>
+            <li><a class="nav-link" href="../../" aria-current="true">博客</a></li>
+            <li><a class="nav-link" href="https://apps.dxagent.cloud/">应用</a></li>
+            <li>
+              <a class="nav-link nav-link-external" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="page-hero" id="top" aria-labelledby="article-title">
+      <div class="container">
+        <nav aria-label="面包屑">
+          <ol class="crumbs hero-item">
+            <li><a href="../../">博客</a></li>
+            <li><span aria-current="page">Tool Calling</span></li>
+          </ol>
+        </nav>
+        <div class="article-head">
+          <p class="eyebrow hero-item">DX Agent · 模型技术</p>
+          <h1 class="article-title hero-item" id="article-title">Tool Calling 不是插件魔法:它是接口设计</h1>
+          <p class="article-meta hero-item">
+            <time datetime="2026-10-01">2026 年 10 月 1 日</time>
+            <span>分类:模型技术</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="article-section" aria-label="文章正文">
+      <div class="container">
+        <article class="prose">
+          <p>Tool Calling 经常被讲成“让模型调用插件”。这个说法太轻了。真正的 Tool Calling 是把自然语言系统接到真实软件系统上:模型负责判断何时需要外部能力,应用负责定义工具、执行工具、校验结果、处理失败和记录审计。</p>
+
+          <p>OpenAI 的 <a href="https://developers.openai.com/api/docs/guides/function-calling" target="_blank" rel="noopener noreferrer">Function calling 文档</a>把它定义为让模型访问外部系统和数据的方式。放到工程里看,它更像接口设计:你给模型的不是“万能手臂”,而是一组受限、可验证、可观察的函数。</p>
+
+          <h2>一个工具应该像一个好 API</h2>
+          <p>工具 schema 不是给人看的装饰,而是模型决策的边界。一个好工具通常满足四个条件:</p>
+          <ul>
+            <li>名字表达动作,例如 <code>search_docs</code>、<code>create_calendar_event</code>、<code>deploy_static_site</code>。</li>
+            <li>参数足够窄,避免把一整段自然语言塞进万能字段。</li>
+            <li>返回值稳定,最好是结构化对象,而不是不可预测的长文本。</li>
+            <li>副作用明确,写操作、发消息、付款、部署都必须比读操作更受控。</li>
+          </ul>
+
+          <p>这和传统 API 设计的直觉一致:函数越含糊,调用者越容易误用。差别只在于调用者是模型,它会根据工具描述推理用途,所以描述必须同时服务人和模型。</p>
+
+          <h2>工具越多,越需要路由</h2>
+          <p>许多团队的第一个 Tool Calling 原型会把所有工具一次性塞给模型。工具很少时可以工作,工具变多后会出现两个问题:上下文被工具描述挤占,模型也更容易在相似工具之间犹豫或误选。</p>
+          <p>官方资料已经开始把大量工具管理拆成不同层次: <a href="https://developers.openai.com/api/docs/guides/tools-tool-search" target="_blank" rel="noopener noreferrer">tool search</a>用于延迟加载大规模或低频工具,<a href="https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling" target="_blank" rel="noopener noreferrer">Programmatic Tool Calling</a>则让模型生成 JavaScript 来执行循环、条件、并行调用和中间结果压缩。社区里关于 MCP、工具注册表和代理编排的长帖,也都在讨论同一个问题:工具层需要成为系统架构的一部分,而不是 prompt 后面的一串 JSON。</p>
+
+          <blockquote>
+            <p>当工具数量从 5 个变成 50 个,问题就从“模型会不会调用”变成“系统怎样让它只看到此刻该看的工具”。</p>
+          </blockquote>
+
+          <h2>错误恢复比首次成功更重要</h2>
+          <p>Tool Calling 的演示通常展示理想路径:用户问天气,模型调用天气函数,函数返回结果,模型回答。但真实应用里更常见的是:</p>
+          <ul>
+            <li>参数缺失:用户没有提供城市、日期或账号。</li>
+            <li>权限不足:当前 token 不能读取某个资源。</li>
+            <li>工具失败:外部 API 超时、限流、返回 500。</li>
+            <li>结果冲突:检索到多个同名对象,需要用户确认。</li>
+            <li>副作用敏感:模型想执行写操作,但系统需要人工批准。</li>
+          </ul>
+          <p>所以工具返回值里应该包含可机器读取的错误码和恢复建议,而不是只抛异常。模型可以把 <code>permission_denied</code>、<code>rate_limited</code>、<code>ambiguous_target</code> 转成下一步对话或降级方案。</p>
+
+          <h2>并行调用不是无脑加速</h2>
+          <p>并行工具调用能提升速度,但只适合独立读操作,例如同时查文档、查库存、查多个项目状态。写操作、顺序依赖和共享资源更新不应该盲目并行。否则一次看似聪明的优化,可能变成重复下单、重复发信或部署状态竞争。</p>
+          <p>面向个人开发者,可以先采用简单规则:读操作默认可并行,写操作默认串行;任何会影响外部世界的动作,都要求工具层检查幂等键、权限和确认状态。</p>
+
+          <h2>可观测性决定你能不能修</h2>
+          <p>当用户说“AI 刚才乱操作了”,你需要能回答:</p>
+          <ul>
+            <li>模型看到了哪些工具。</li>
+            <li>它为什么选择这个工具。</li>
+            <li>传入参数是什么。</li>
+            <li>工具返回了什么。</li>
+            <li>最终回复如何引用工具结果。</li>
+          </ul>
+          <p>OpenAI 的 Agents 相关文档把 tracing、guardrails、human review 放进代理开发流程,原因就在这里。Tool Calling 不是一次函数调用,而是一条可审计链路。没有链路记录,你只能靠猜。</p>
+
+          <h2>一个极简设计模板</h2>
+          <p>下面是一个有效 JSON Schema 风格的概念示例,用于表达工具参数边界;真实接入时还需要按所用 API 的完整工具定义格式补齐名称、描述和返回处理。</p>
+          <pre><code>{
+  "name": "search_project_docs",
+  "description": "Search public project documentation by keyword.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "minLength": 1
+      },
+      "project": {
+        "type": "string",
+        "enum": ["skillgene", "niu-lai-video-translator", "openstock-enhanced"]
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      }
+    },
+    "required": ["query", "project"],
+    "additionalProperties": false
+  }
+}</code></pre>
+          <p>这个模板故意很窄:只能查公开项目文档,不能读取私有仓库,不能写入外部系统。等系统真的需要写操作,再设计单独工具,并加上确认、幂等和审计。</p>
+
+          <h2>资料来源</h2>
+          <p>本文参考了 OpenAI <a href="https://developers.openai.com/api/docs/guides/function-calling" target="_blank" rel="noopener noreferrer">Function calling</a>、<a href="https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling" target="_blank" rel="noopener noreferrer">Programmatic Tool Calling</a>、<a href="https://developers.openai.com/api/docs/guides/agents" target="_blank" rel="noopener noreferrer">Agents</a> 与 <a href="https://openai.github.io/openai-agents-js/guides/guardrails/" target="_blank" rel="noopener noreferrer">Agents SDK Guardrails</a> 文档。社区趋势参考了 X 和开发者社区对 MCP、工具路由、代理编排的公开讨论;本文只做综合评论,不引用或改写任何长帖正文。</p>
+
+          <div class="article-nav">
+            <a class="btn btn-primary" href="../../">
+              返回博客首页
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="https://apps.dxagent.cloud/" target="_blank" rel="noopener noreferrer">
+              查看应用站
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-line">© 2026 DX Agent · <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">github.com/ouyang-2019</a></p>
+      <a class="footer-top" href="#top">回到顶部
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+      </a>
+      <nav class="footer-sites" aria-label="站点导航">
+        <a href="https://dxagent.cloud/">主页</a>
+        <a href="https://projects.dxagent.cloud/">项目</a>
+        <a href="../../" aria-current="page">博客</a>
+        <a href="https://apps.dxagent.cloud/">应用</a>
+      </nav>
+      <p class="footer-note">OpenStock-Enhanced 基于 Open Dev Society 的 OpenStock(AGPL-3.0)增强,上游版权与署名归原作者所有。</p>
+    </div>
+  </footer>
+</body>
+</html>

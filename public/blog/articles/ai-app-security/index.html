@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 应用安全:从 Prompt Injection 到工具权限 · DX Agent 博客</title>
+  <meta name="description" content="面向 AI 应用开发者的安全长文:prompt injection、工具权限、私有数据、外部通信、guardrails、人审与最小权限设计。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191716'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='%23faf9f6' text-anchor='middle'%3EDX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../site.css">
+  <script src="../../main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="https://dxagent.cloud/" aria-label="DX Agent 主页">
+        <span class="brand-mark" aria-hidden="true">DX</span>
+        <span class="brand-name">DX Agent</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-nav-toggle>
+          <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+          <span class="nav-toggle-label">菜单</span>
+        </button>
+        <div class="nav-panel" data-nav-panel id="site-menu">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="https://dxagent.cloud/">主页</a></li>
+            <li><a class="nav-link" href="https://projects.dxagent.cloud/">项目</a></li>
+            <li><a class="nav-link" href="../../" aria-current="true">博客</a></li>
+            <li><a class="nav-link" href="https://apps.dxagent.cloud/">应用</a></li>
+            <li>
+              <a class="nav-link nav-link-external" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="page-hero" id="top" aria-labelledby="article-title">
+      <div class="container">
+        <nav aria-label="面包屑">
+          <ol class="crumbs hero-item">
+            <li><a href="../../">博客</a></li>
+            <li><span aria-current="page">AI 应用安全</span></li>
+          </ol>
+        </nav>
+        <div class="article-head">
+          <p class="eyebrow hero-item">DX Agent · 安全</p>
+          <h1 class="article-title hero-item" id="article-title">AI 应用安全:从 Prompt Injection 到工具权限</h1>
+          <p class="article-meta hero-item">
+            <time datetime="2026-10-01">2026 年 10 月 1 日</time>
+            <span>分类:AI 安全</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="article-section" aria-label="文章正文">
+      <div class="container">
+        <article class="prose">
+          <p>AI 应用的安全问题,已经不只是“模型会不会胡说”。当模型能读文件、访问网页、调用工具、写数据库、发邮件或部署代码时,它就进入了真实权限系统。此时 prompt injection 不再是聊天里的恶作剧,而可能变成越权操作、数据泄露和供应链风险。</p>
+
+          <p>OWASP 在 <a href="https://genai.owasp.org/llm-top-10/" target="_blank" rel="noopener noreferrer">LLM Top 10</a> 中把 Prompt Injection 放在首位。OpenAI 的 <a href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals" target="_blank" rel="noopener noreferrer">guardrails 与 human review 文档</a>也提醒,代理应用需要输入检查、输出检查、工具调用前后的约束和人工审批。把这些资料和社区安全讨论合在一起,可以得到一个朴素结论:AI 应用安全的核心是权限设计。</p>
+
+          <h2>Prompt Injection 为什么难防</h2>
+          <p>传统注入攻击通常发生在代码解释边界上:SQL、Shell、HTML、模板。Prompt injection 的麻烦在于,模型天然会把自然语言指令和自然语言数据放进同一个语义空间。网页、邮件、PDF、issue 评论、聊天记录,都可能包含“看起来像数据,实际上想改变行为”的文本。</p>
+
+          <p>OWASP 的 <a href="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">Prompt Injection Prevention Cheat Sheet</a>把这类风险归纳为直接注入、间接注入、隐藏指令、多模态载荷等模式。对开发者来说,最重要的不是记住所有名字,而是承认一个前提:凡是来自用户、网页、文档或外部工具的内容,都应该被当作不可信输入。</p>
+
+          <blockquote>
+            <p>不要试图用一句“忽略恶意提示词”解决 prompt injection。系统结构必须让恶意文本即使被读到,也拿不到不该有的权力。</p>
+          </blockquote>
+
+          <h2>危险组合:私有数据、不可信内容、外部通信</h2>
+          <p>安全社区经常讨论的“lethal trifecta”可以理解为三个条件同时出现:</p>
+          <ul>
+            <li>模型能访问私有数据,例如仓库、邮件、数据库、内部文档。</li>
+            <li>模型会读取不可信内容,例如网页、issue、用户上传文件。</li>
+            <li>模型能把信息发到外部,例如发邮件、写 GitHub issue、访问任意 URL。</li>
+          </ul>
+          <p>这组条件一旦同时成立,攻击者就可能把恶意指令藏在不可信内容里,诱导代理读取私有数据并通过外部通道泄露。X 上关于 <a href="https://x.com/ctodotnew/status/2017271423782494590" target="_blank" rel="noopener noreferrer">代理权限边界</a>、<a href="https://x.com/aakashgupta/status/2015298307690783021" target="_blank" rel="noopener noreferrer">AI 应用安全取舍</a>的讨论,可以作为趋势信号:开发者越来越关心代理拿到真实权限后的边界。</p>
+
+          <h2>把工具分成四级权限</h2>
+          <p>一个实用的设计方法,是先给所有工具分级:</p>
+          <ul>
+            <li>0 级:纯计算,没有外部输入输出,例如格式转换、摘要本地文本。</li>
+            <li>1 级:只读公开数据,例如搜索公开文档、读取公开网页。</li>
+            <li>2 级:只读私有数据,例如读取个人仓库、内部知识库、邮件。</li>
+            <li>3 级:有副作用,例如写文件、发消息、创建 issue、部署、支付。</li>
+          </ul>
+          <p>级别越高,越需要更强的约束。2 级工具不能和任意外部通信工具自由组合;3 级工具需要明确确认、幂等键、审计日志和回滚路径。模型不应该拥有“看什么都行、发哪里都行、改什么都行”的混合权限。</p>
+
+          <h2>Guardrails 要放在工具边界上</h2>
+          <p>很多人把 guardrails 理解成输出审核:模型回答前检查一下有没有违规内容。对普通聊天这有意义,但对代理应用还不够。真正敏感的位置在工具边界:</p>
+          <ul>
+            <li>调用前:检查这个用户是否有权使用该工具。</li>
+            <li>参数前:检查目标资源是否属于允许范围。</li>
+            <li>执行前:高风险动作需要人工确认或策略批准。</li>
+            <li>返回后:过滤私有数据,避免把工具结果直接暴露给模型或用户。</li>
+            <li>输出前:检查最终回答是否包含密钥、token、个人信息或内部路径。</li>
+          </ul>
+          <p>OpenAI Agents SDK 的 <a href="https://openai.github.io/openai-agents-js/guides/guardrails/" target="_blank" rel="noopener noreferrer">Guardrails 文档</a>提供了输入、输出和工具调用周围的约束思路。具体实现可以不同,但位置不能错:只在最后拦输出,往往已经太晚。</p>
+
+          <h2>个人网站和小应用也要做最小权限</h2>
+          <p>个人开发者常常觉得安全是大公司的事。但只要你的应用连接 GitHub、Cloudflare、邮箱、数据库或支付,风险就已经存在。最低成本的做法是:</p>
+          <ul>
+            <li>静态站点优先:没有后端就没有后端权限泄露。</li>
+            <li>公开数据和私有数据分项目、分 token、分环境。</li>
+            <li>每个 token 只给当前任务所需权限,不用万能管理员 token。</li>
+            <li>所有写操作先生成草稿或计划,再由人确认。</li>
+            <li>不要让代理同时读取不可信网页、私有仓库和任意外发工具。</li>
+            <li>把日志当成产品功能:记录谁、何时、让模型调用了什么工具。</li>
+          </ul>
+
+          <h2>一个安全检查清单</h2>
+          <pre><code>输入来源:哪些内容是不可信的?
+数据边界:模型能读取哪些私有数据?
+工具边界:哪些工具会产生副作用?
+外发边界:模型能把信息发送到哪里?
+确认机制:高风险动作是否需要人工批准?
+审计机制:失败后能否复盘工具调用链路?</code></pre>
+          <p>这个清单不能覆盖所有风险,但它能防止最常见的结构性错误。安全不是让模型“更听话”,而是让系统在模型听错时仍然不至于越权。</p>
+
+          <h2>资料来源</h2>
+          <p>本文参考了 <a href="https://genai.owasp.org/llm-top-10/" target="_blank" rel="noopener noreferrer">OWASP Top 10 for LLM Applications</a>、<a href="https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">OWASP Prompt Injection Prevention Cheat Sheet</a>、OpenAI <a href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals" target="_blank" rel="noopener noreferrer">Guardrails and human review</a> 与 <a href="https://openai.github.io/openai-agents-js/guides/guardrails/" target="_blank" rel="noopener noreferrer">Agents SDK Guardrails</a>。X 链接仅作为安全社区讨论趋势,本文不复制原帖,也不把未经验证的传播数据当事实。</p>
+
+          <div class="article-nav">
+            <a class="btn btn-primary" href="../../">
+              返回博客首页
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+              查看 GitHub
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-line">© 2026 DX Agent · <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">github.com/ouyang-2019</a></p>
+      <a class="footer-top" href="#top">回到顶部
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+      </a>
+      <nav class="footer-sites" aria-label="站点导航">
+        <a href="https://dxagent.cloud/">主页</a>
+        <a href="https://projects.dxagent.cloud/">项目</a>
+        <a href="../../" aria-current="page">博客</a>
+        <a href="https://apps.dxagent.cloud/">应用</a>
+      </nav>
+      <p class="footer-note">OpenStock-Enhanced 基于 Open Dev Society 的 OpenStock(AGPL-3.0)增强,上游版权与署名归原作者所有。</p>
+    </div>
+  </footer>
+</body>
+</html>

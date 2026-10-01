@@ -1,24 +1,37 @@
-# DX Agent 个人网站
+# DX Agent 网站群
 
-面向 `dxagent.cloud` 的静态个人主页与公开项目入口。源码保存在 GitHub，计划使用 Cloudflare 的免费静态托管和 DNS 服务。
+同一个 GitHub 仓库维护四个中文静态站点，不依赖付费服务、数据库或前端框架。
 
-## 本地预览
+| 站点 | 域名 | Cloudflare Pages 输出目录 |
+| --- | --- | --- |
+| 个人主页 | `dxagent.cloud` | `dist/home` |
+| 博客 | `blog.dxagent.cloud` | `dist/blog` |
+| 应用展示 | `apps.dxagent.cloud` | `dist/apps` |
+| 项目展示 | `projects.dxagent.cloud` | `dist/projects` |
+
+## 本地构建与预览
+
+需要 Node.js 和 Python 3，无需安装 npm 依赖。
 
 ```powershell
-python -m http.server 4173 --directory public
+node scripts/build.mjs
+python -m http.server 4173 --directory dist/home
 ```
 
-打开 <http://127.0.0.1:4173/>。
+将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录。
 
-## 项目与来源
+## Cloudflare Pages 配置
 
-主页只将 [SkillGene](https://github.com/ouyang-2019/SkillGene) 和 [niu-lai-video-translator](https://github.com/ouyang-2019/niu-lai-video-translator) 列为主要作品。若展示 [OpenStock-Enhanced](https://github.com/ouyang-2019/OpenStock-Enhanced)，需标明其基于 Open Dev Society 的 OpenStock 项目，遵循上游许可证和署名要求。
+从同一仓库 `ouyang-2019/dxagent-website` 创建四个 Pages 项目。每个项目的生产分支均为 `main`，构建命令均为 `node scripts/build.mjs`，根目录为仓库根目录；输出目录分别采用上表的路径。先确认四个 `*.pages.dev` 地址可访问，再在各项目的 **Custom domains** 页面绑定对应域名。
 
-## 部署计划
+Cloudflare 的 [monorepo 文档](https://developers.cloudflare.com/pages/configuration/monorepos/) 支持同一仓库对应多个 Pages 项目；[自定义域名文档](https://developers.cloudflare.com/pages/configuration/custom-domains/) 要求在 Pages 项目内添加域名，不能仅手动填写 DNS 记录。
 
-1. 创建公开 GitHub 仓库并推送 `main` 分支。
-2. 在 Cloudflare Workers & Pages 中连接该仓库，选择 Pages，构建命令留空，输出目录设为 `public`。
-3. 先检查 `*.pages.dev` 预览，再绑定 `dxagent.cloud`。
-4. 切换腾讯云管理的域名 NS 前，逐项核对 Cloudflare 导入的 DNS 记录，尤其是邮件相关的 MX/TXT 记录。
+## 项目展示与署名
 
-站点不需要后端、数据库、API 密钥或付费依赖。
+- [SkillGene](https://github.com/ouyang-2019/SkillGene) 与 [niu-lai-video-translator](https://github.com/ouyang-2019/niu-lai-video-translator) 是主页和项目站的主要作品。
+- [OpenStock-Enhanced](https://github.com/ouyang-2019/OpenStock-Enhanced) 基于 [Open Dev Society 的 OpenStock](https://github.com/Open-Dev-Society/OpenStock) 增强，在页面中单独列出并注明 AGPL-3.0 与上游作者。
+- 博客文章以公开资料为研究线索，使用原创叙述和可点击来源；不复制 X 帖或其他作者的长篇正文。
+
+## 目录
+
+`public/` 存放站点源码，`scripts/build.mjs` 生成被 Git 忽略的 `dist/`。文章和应用都使用本地 HTML、CSS 与 JavaScript，页面核心功能不依赖外部网络请求。

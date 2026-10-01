@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 编程工作流:从 Vibe 到可交付工程 · DX Agent 博客</title>
+  <meta name="description" content="把社区里关于 AI coding、vibe coding、Codex 与代理工程的讨论，整理成可落地的个人开发工作流:选题、上下文、任务拆分、验证和交付。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191716'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='%23faf9f6' text-anchor='middle'%3EDX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../site.css">
+  <script src="../../main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="https://dxagent.cloud/" aria-label="DX Agent 主页">
+        <span class="brand-mark" aria-hidden="true">DX</span>
+        <span class="brand-name">DX Agent</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-nav-toggle>
+          <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+          <span class="nav-toggle-label">菜单</span>
+        </button>
+        <div class="nav-panel" data-nav-panel id="site-menu">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="https://dxagent.cloud/">主页</a></li>
+            <li><a class="nav-link" href="https://projects.dxagent.cloud/">项目</a></li>
+            <li><a class="nav-link" href="../../" aria-current="true">博客</a></li>
+            <li><a class="nav-link" href="https://apps.dxagent.cloud/">应用</a></li>
+            <li>
+              <a class="nav-link nav-link-external" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="page-hero" id="top" aria-labelledby="article-title">
+      <div class="container">
+        <nav aria-label="面包屑">
+          <ol class="crumbs hero-item">
+            <li><a href="../../">博客</a></li>
+            <li><span aria-current="page">AI 编程工作流</span></li>
+          </ol>
+        </nav>
+        <div class="article-head">
+          <p class="eyebrow hero-item">DX Agent · 工程方法</p>
+          <h1 class="article-title hero-item" id="article-title">AI 编程工作流:从 Vibe 到可交付工程</h1>
+          <p class="article-meta hero-item">
+            <time datetime="2026-10-01">2026 年 10 月 1 日</time>
+            <span>分类:AI 编程</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="article-section" aria-label="文章正文">
+      <div class="container">
+        <article class="prose">
+          <p>过去一年,开发者对 AI 编程的讨论从“它会不会写代码”转向“怎样让它稳定交付”。X 上关于 <a href="https://x.com/karpathy/status/1886192184808149383" target="_blank" rel="noopener noreferrer">vibe coding</a>、代理式开发和 Codex 类工具的长帖很多,它们共同指向一个事实:模型可以把想法迅速变成代码,但可交付的软件仍然需要上下文、边界、验证和审阅。</p>
+
+          <p>这篇文章把公开讨论与官方资料重新整理成一套个人开发者也能执行的流程。它不是某个帖子的复述,也不假装有神奇提示词。真正有用的不是一句口令,而是让 AI 在正确的约束里持续做小步工作。</p>
+
+          <h2>先把 AI 从“聊天对象”变成“工程参与者”</h2>
+          <p>很多失败的 AI 编程体验,起点就是把任务描述得像聊天:给它一个笼统目标,期待它自动知道代码库结构、产品意图、测试口径和发布风险。模型会尽力补全缺失信息,但补全本身就是风险来源。</p>
+          <p>更稳的方式是把 AI 当成一个工程参与者:它需要角色、输入、允许修改的文件、验收标准、不能触碰的边界,以及失败后该怎样恢复。OpenAI 的 <a href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener noreferrer">Prompt engineering 文档</a>也强调,编码任务应该给出明确角色、结构化工具使用方式、测试要求和输出格式。</p>
+
+          <blockquote>
+            <p>提示词的重点不是“让模型更聪明”,而是把工程现场里那些默认知识显式写出来。</p>
+          </blockquote>
+
+          <h2>一条可复用的工作流</h2>
+          <p>对个人网站、小工具、开源项目维护这类任务,我会把 AI 编程拆成六步:</p>
+          <ul>
+            <li>先定义交付物:页面、脚本、修复、文档还是部署配置。</li>
+            <li>再限定上下文:相关目录、已有模式、不能改的文件、外部账号边界。</li>
+            <li>让 AI 先读再改:搜索文件、识别依赖、确认约定。</li>
+            <li>把大任务拆成可验证的小任务:一个页面、一个组件、一个脚本、一个测试。</li>
+            <li>每一步都保留验证命令:构建、lint、测试、链接检查或浏览器截图。</li>
+            <li>最后由人或更严格的模型审阅:看需求是否满足,看风险是否被遗漏。</li>
+          </ul>
+
+          <p>这个流程的关键是“AI 可以快,但任务必须小”。当一个任务同时要求改前端、连数据库、重写认证、上线部署,模型就会被迫在大量隐含决策里猜。把任务切小后,它的优势才会出现:快速搜索、快速改动、快速运行验证,然后根据结果继续。</p>
+
+          <h2>上下文比提示词更值钱</h2>
+          <p>AI 编程真正消耗人的地方,不是敲代码,而是整理上下文。一个好上下文包通常包含:</p>
+          <ul>
+            <li>目标:用户最终会看到或得到什么。</li>
+            <li>当前状态:哪些文件已经存在,哪些能力已经完成。</li>
+            <li>约束:技术栈、域名、部署平台、权限边界、版权要求。</li>
+            <li>验收:通过哪些命令或人工检查才算完成。</li>
+            <li>风格:现有页面的视觉语言、文案口吻、代码习惯。</li>
+          </ul>
+          <p>社区里关于 <a href="https://x.com/kaxil/status/2037503513350005134" target="_blank" rel="noopener noreferrer">代理式工程流程</a>和 <a href="https://x.com/minchoi/status/2027772823511429367" target="_blank" rel="noopener noreferrer">批量任务与并行代理</a>的讨论提供了工作方式上的线索。本文进一步建议把验证放在每个任务的末尾:先让失败显形,再围绕证据修复。</p>
+
+          <h2>不要把“能跑”当成“完成”</h2>
+          <p>AI 生成的代码很容易给人一种已经完成的错觉。页面打开了,命令通过了,它还解释得很有条理。但交付标准应该再往前一步:</p>
+          <ul>
+            <li>功能路径是否真的覆盖了用户要做的事。</li>
+            <li>错误状态、空状态、移动端、慢网络是否能接受。</li>
+            <li>依赖和外部 API 是否符合免费额度和权限边界。</li>
+            <li>生成内容是否有事实来源,是否误用了别人的长文或代码。</li>
+            <li>部署配置是否可重复,而不是只在当前机器碰巧成功。</li>
+          </ul>
+          <p>这也是为什么本文所在的网站群采用纯静态结构:它把变量压到最低。没有数据库、没有用户登录、没有后台任务,就少了很多 AI 容易误判的状态。</p>
+
+          <h2>个人开发者的实践建议</h2>
+          <p>如果你正在用 AI 搭建个人网站或项目展示页,可以从一份简单的任务卡开始:</p>
+          <pre><code>目标:新增一个项目详情页
+输入:项目 README、截图、已有项目页模板
+允许改动:public/projects/... 下的 HTML/CSS
+禁止改动:部署脚本、其他项目页面
+验收:本地构建通过,导航链接可点击,360px 和桌面宽度不溢出</code></pre>
+          <p>这类任务卡看起来朴素,但它能显著减少 AI 的猜测空间。等你需要更复杂的流程,再加入子任务、评审代理、自动化测试和部署检查。</p>
+
+          <h2>资料来源</h2>
+          <p>本文参考了 OpenAI 关于 <a href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener noreferrer">Prompt engineering</a>、<a href="https://developers.openai.com/api/docs/guides/agents" target="_blank" rel="noopener noreferrer">Agents</a> 和 <a href="https://openai.com/index/introducing-the-agents-api/" target="_blank" rel="noopener noreferrer">Agents API</a> 的官方资料,以及 X 上关于 <a href="https://x.com/karpathy/status/1886192184808149383" target="_blank" rel="noopener noreferrer">vibe coding</a>、<a href="https://x.com/kaxil/status/2037503513350005134" target="_blank" rel="noopener noreferrer">代理式工程流程</a>与 <a href="https://x.com/minchoi/status/2027772823511429367" target="_blank" rel="noopener noreferrer">AI 编程实践</a> 的公开讨论。X 链接只作为趋势线索,本文不复制原帖正文,也不声称其热度指标。</p>
+
+          <div class="article-nav">
+            <a class="btn btn-primary" href="../../">
+              返回博客首页
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="https://projects.dxagent.cloud/" target="_blank" rel="noopener noreferrer">
+              查看项目站
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-line">© 2026 DX Agent · <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">github.com/ouyang-2019</a></p>
+      <a class="footer-top" href="#top">回到顶部
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+      </a>
+      <nav class="footer-sites" aria-label="站点导航">
+        <a href="https://dxagent.cloud/">主页</a>
+        <a href="https://projects.dxagent.cloud/">项目</a>
+        <a href="../../" aria-current="page">博客</a>
+        <a href="https://apps.dxagent.cloud/">应用</a>
+      </nav>
+      <p class="footer-note">OpenStock-Enhanced 基于 Open Dev Society 的 OpenStock(AGPL-3.0)增强,上游版权与署名归原作者所有。</p>
+    </div>
+  </footer>
+</body>
+</html>

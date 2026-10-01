@@ -1,0 +1,68 @@
+/* ============================================================
+   DX Agent · 项目子站样式
+   仅包含项目站专属布局;跨站共享组件见 styles.css。
+   ============================================================ */
+
+/* ---------- 项目卡片内的链接组 ---------- */
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 24px;
+  margin-top: 20px;
+}
+
+.card-actions .project-link {
+  margin-top: 0;
+}
+
+/* ---------- 项目详情:技术信息 ---------- */
+
+.spec-list {
+  margin: 0;
+  max-width: 720px;
+  border-top: 1px solid var(--line);
+}
+
+.spec-list > div {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 4px 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.spec-list dt {
+  color: var(--ink-faint);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.spec-list dd {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.spec-list a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .spec-list > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 项目详情:首屏标签 ---------- */
+
+.page-hero .tag-list {
+  margin-top: 24px;
+}
+
+.prose .spec-list {
+  margin-top: 20px;
+}
