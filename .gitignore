@@ -1,0 +1,8 @@
+.spec-workflow/
+.agent-runs/
+.external-worker/
+node_modules/
+.env
+.env.*
+!.env.example
+
