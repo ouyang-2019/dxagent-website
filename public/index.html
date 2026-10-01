@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DX Agent · 个人主页与项目展示</title>
+  <meta name="description" content="DX Agent(ouyang-2019)的个人主页:精选公开项目 SkillGene 与 niu-lai-video-translator,以及基于 OpenStock 的开源增强项目。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191716'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='26' font-weight='700' fill='%23faf9f6' text-anchor='middle'%3EDX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="DX Agent 首页">
+        <span class="brand-mark" aria-hidden="true">DX</span>
+        <span class="brand-name">DX Agent</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-nav-toggle>
+          <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span></span>
+          <span class="nav-toggle-label">菜单</span>
+        </button>
+        <div class="nav-panel" data-nav-panel id="site-menu">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="#projects">精选项目</a></li>
+            <li><a class="nav-link" href="#open-source">开源增强</a></li>
+            <li><a class="nav-link" href="#about">关于</a></li>
+            <li>
+              <a class="nav-link nav-link-external" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                GitHub
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container">
+        <p class="eyebrow hero-item">ouyang-2019 · GitHub 个人主页</p>
+        <h1 class="hero-title hero-item" id="hero-title">DX Agent<span class="hero-dot" aria-hidden="true">.</span></h1>
+        <p class="hero-lede hero-item">这里汇集 GitHub 用户 <strong>ouyang-2019</strong> 公开的项目:两个原创作品,以及一个基于上游开源项目的增强版本。所有代码均可在 GitHub 上查阅。</p>
+        <div class="hero-actions hero-item">
+          <a class="btn btn-primary" href="#projects">
+            浏览精选项目
+            <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
+            GitHub 主页
+            <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </div>
+        <ul class="hero-meta hero-item" aria-label="站点说明">
+          <li>纯静态站点</li>
+          <li>中文优先</li>
+          <li>开源可查阅</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">01 · 精选项目</p>
+          <h2 class="section-title" id="projects-title">原创作品</h2>
+          <p class="section-desc">以下项目由 ouyang-2019 创建并维护,描述与链接均来自其公开 GitHub 仓库。</p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card" data-reveal>
+            <div class="project-top">
+              <span class="project-index" aria-hidden="true">01</span>
+              <h3 class="project-title">SkillGene</h3>
+            </div>
+            <p class="project-desc">AI 能力胶囊平台:由 MCP 驱动的技能胶囊搜索与进化系统,内置 910+ 个预置胶囊,让 Agent 可以按需发现、组合与演进能力。</p>
+            <ul class="tag-list" aria-label="技术信息">
+              <li class="tag">TypeScript</li>
+              <li class="tag">MCP</li>
+              <li class="tag">Agent Skills</li>
+            </ul>
+            <a class="project-link" href="https://github.com/ouyang-2019/SkillGene" target="_blank" rel="noopener noreferrer">
+              查看 SkillGene 仓库
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </article>
+
+          <article class="project-card" data-reveal>
+            <div class="project-top">
+              <span class="project-index" aria-hidden="true">02</span>
+              <h3 class="project-title">niu-lai-video-translator</h3>
+            </div>
+            <p class="project-desc">面向 Codex 的视频风格转换 Skill：提供按镜头分段的 V2V 制作规划、时序一致性约束和本地程序化预览，用于验证剪辑、音频与整体美术方向。</p>
+            <ul class="tag-list" aria-label="技术信息">
+              <li class="tag">Python</li>
+              <li class="tag">MIT 许可证</li>
+              <li class="tag">视频处理</li>
+            </ul>
+            <a class="project-link" href="https://github.com/ouyang-2019/niu-lai-video-translator" target="_blank" rel="noopener noreferrer">
+              查看视频项目仓库
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="open-source" aria-labelledby="open-source-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">02 · 开源增强</p>
+          <h2 class="section-title" id="open-source-title">基于上游的二次开发</h2>
+          <p class="section-desc">以下项目基于他人的开源作品增强而来，延续 AGPL-3.0 许可并保留上游署名；此处重点展示增强部分。</p>
+        </div>
+
+        <article class="oss-card" data-reveal>
+          <div class="oss-badge" role="note">
+            <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            开源增强 · 遵循上游 AGPL-3.0
+          </div>
+          <h3 class="project-title">OpenStock-Enhanced</h3>
+          <p class="project-desc">增强版开源股票分析平台:覆盖 A 股、美股、港股多数据源,接入 Gemini、DeepSeek、OpenAI 等模型进行智能分析,并支持 Telegram、微信、飞书、钉钉等多渠道通知与每日报告。</p>
+          <p class="oss-credit">本项目基于 <a href="https://github.com/Open-Dev-Society/OpenStock" target="_blank" rel="noopener noreferrer">Open Dev Society 的 OpenStock</a>(AGPL-3.0)二次开发,感谢 ravixalgorithm 及上游社区的贡献。增强版同样以 AGPL-3.0 发布,不声称对上游代码的所有权。</p>
+          <ul class="tag-list" aria-label="技术信息">
+            <li class="tag">TypeScript</li>
+            <li class="tag">AGPL-3.0</li>
+            <li class="tag">数据分析</li>
+          </ul>
+          <div class="oss-actions">
+            <a class="btn btn-primary" href="https://github.com/ouyang-2019/OpenStock-Enhanced" target="_blank" rel="noopener noreferrer">
+              查看增强版仓库
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/Open-Dev-Society/OpenStock" target="_blank" rel="noopener noreferrer">
+              访问上游 OpenStock
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-about" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">03 · 关于</p>
+          <h2 class="section-title" id="about-title">关于本站</h2>
+        </div>
+        <div class="about-body" data-reveal>
+          <p>本站是 DX Agent(GitHub 用户 <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">ouyang-2019</a>)的个人主页,用于集中展示其公开的原创作品与开源增强项目。</p>
+          <p>站点为纯静态页面，不依赖后端服务，不要求访客登录，页面代码也未集成统计或追踪脚本。所列项目的描述、语言与许可证信息依据对应的公开 GitHub 仓库编写。</p>
+          <p>本站源码与页面内容同样托管于 GitHub,欢迎通过仓库了解实现细节。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-line">© 2026 DX Agent · <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">github.com/ouyang-2019</a></p>
+      <p class="footer-note">OpenStock-Enhanced 基于 Open Dev Society 的 OpenStock(AGPL-3.0)增强,上游版权与署名归原作者所有。</p>
+      <a class="footer-top" href="#top">回到顶部
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+      </a>
+    </div>
+  </footer>
+</body>
+</html>
