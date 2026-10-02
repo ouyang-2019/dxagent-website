@@ -1,6 +1,9 @@
-import { cp, lstat, mkdir, readdir, realpath, rm, stat } from "node:fs/promises";
+import { cp, lstat, mkdir, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { products } from "./product-data.mjs";
+import { renderProductSites } from "./product-sites.mjs";
+import { renderProductCards } from "./product-cards.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "public");
@@ -50,6 +53,15 @@ for (const site of sites) {
     for (const file of sharedFiles) {
       await cp(join(source, file), join(destination, file));
     }
+  }
+  if (site === "projects") {
+    await renderProductSites({ products, output: destination });
+  }
+  if (site === "home" || site === "projects") {
+    const indexFile = join(destination, "index.html");
+    const html = await readFile(indexFile, "utf8");
+    if (!html.includes("<!-- PRODUCT-CARDS -->")) throw new Error(`Missing product section in ${site}`);
+    await writeFile(indexFile, html.replace("<!-- PRODUCT-CARDS -->", renderProductCards(products, site === "home" ? "https://projects.dxagent.cloud/" : "")));
   }
   console.log(`${site}: ${destination}`);
 }

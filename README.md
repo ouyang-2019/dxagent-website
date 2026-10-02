@@ -28,10 +28,13 @@ Cloudflare 的 [monorepo 文档](https://developers.cloudflare.com/pages/configu
 
 ## 项目展示与署名
 
+- 产品官网由 `scripts/product-data.mjs` 的公开介绍与 `scripts/product-sites.mjs` 生成，统一部署在项目站：`/aubeau/`、`/super-lovart/`、`/xuanjian/`、`/ai-cosmetics/`、`/shortdrama/`、`/fragrance/`。
+- 官网仅介绍产品与工作流程，使用虚构界面示意；不包含私有项目源码、客户资料、生产配置或在线模型执行服务。原项目继续由各自的仓库管理。
+- AUBEAU 的 Clawith 衍生部分、SUPER LOVART 的 Loomic 来源、短剧工厂的 LocalMiniDrama 来源分别在页面保留对应许可与署名说明。
 - [SkillGene](https://github.com/ouyang-2019/SkillGene) 与 [niu-lai-video-translator](https://github.com/ouyang-2019/niu-lai-video-translator) 是主页和项目站的主要作品。
 - [OpenStock-Enhanced](https://github.com/ouyang-2019/OpenStock-Enhanced) 基于 [Open Dev Society 的 OpenStock](https://github.com/Open-Dev-Society/OpenStock) 增强，在页面中单独列出并注明 AGPL-3.0 与上游作者。
 - 博客文章以公开资料为研究线索，使用原创叙述和可点击来源；不复制 X 帖或其他作者的长篇正文。
 
 ## 目录
 
-`public/` 存放站点源码，`scripts/build.mjs` 生成被 Git 忽略的 `dist/`。文章和应用都使用本地 HTML、CSS 与 JavaScript，页面核心功能不依赖外部网络请求。
+`public/` 存放站点源码，`scripts/build.mjs` 生成被 Git 忽略的 `dist/`。文章、产品介绍和应用都使用本地 HTML、CSS 与 JavaScript，页面核心功能不依赖外部网络请求。
