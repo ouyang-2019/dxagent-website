@@ -3,7 +3,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { products } from "./product-data.mjs";
 import { renderProductSites } from "./product-sites.mjs";
-import { renderProductCards } from "./product-cards.mjs";
+import { renderProductCards, renderProductMap } from "./product-cards.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "public");
@@ -61,7 +61,9 @@ for (const site of sites) {
     const indexFile = join(destination, "index.html");
     const html = await readFile(indexFile, "utf8");
     if (!html.includes("<!-- PRODUCT-CARDS -->")) throw new Error(`Missing product section in ${site}`);
-    await writeFile(indexFile, html.replace("<!-- PRODUCT-CARDS -->", renderProductCards(products, site === "home" ? "https://projects.dxagent.cloud/" : "")));
+    const featured = site === "home" ? products.filter(product => ["aubeau", "super-lovart", "fragrance"].includes(product.slug)) : products;
+    const rendered = html.replace("<!-- PRODUCT-CARDS -->", renderProductCards(featured, site === "home" ? "https://projects.dxagent.cloud/" : ""));
+    await writeFile(indexFile, site === "home" ? rendered.replace("<!-- PRODUCT-MAP -->", renderProductMap(products)) : rendered);
   }
   console.log(`${site}: ${destination}`);
 }

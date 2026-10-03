@@ -63,12 +63,14 @@
   <main id="main" tabindex="-1">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="container">
-        <p class="eyebrow hero-item">ouyang-2019 · GitHub 个人主页</p>
-        <h1 class="hero-title hero-item" id="hero-title">DX Agent<span class="hero-dot" aria-hidden="true">.</span></h1>
-        <p class="hero-lede hero-item">这里汇集 <strong>ouyang-2019</strong> 的产品与项目：智能体协作、AI 创意、行业工具和内容制作。了解产品的工作方式，也看看持续维护的原创作品与开源增强项目。</p>
+        <div class="hero-grid">
+        <div class="hero-copy">
+        <p class="eyebrow hero-item">DX AGENT / INDEPENDENT BUILDER</p>
+        <h1 class="hero-title hero-item" id="hero-title">让想法成形。<span>让 AI 进入工作。</span></h1>
+        <p class="hero-lede hero-item">我是 <strong>ouyang-2019</strong>。在智能体、创意和行业应用之间，构建可以持续打磨的产品。这里记录它们的能力、工作方式和开发过程。</p>
         <div class="hero-actions hero-item">
           <a class="btn btn-primary" href="#products">
-            浏览产品官网
+            探索产品
             <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
           </a>
           <a class="btn btn-ghost" href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">
@@ -77,10 +79,18 @@
           </a>
         </div>
         <ul class="hero-meta hero-item" aria-label="站点说明">
-          <li>纯静态站点</li>
-          <li>中文优先</li>
-          <li>产品与开源作品</li>
+          <li>独立开发</li>
+          <li>六个产品方向</li>
+          <li>持续构建</li>
         </ul>
+        </div>
+        <div class="studio-map" aria-label="六个产品的入口与概念示意">
+          <div class="map-bar"><span><span class="map-dots" aria-hidden="true"><i></i><i></i><i></i></span>DX / PRODUCT UNIVERSE</span><span>01 — 06</span></div>
+          <div class="map-grid"><!-- PRODUCT-MAP --></div>
+          <p class="map-caption"><i aria-hidden="true"></i>概念示意 · 点击了解各产品的真实工作流程</p>
+        </div>
+        </div>
+        <div class="hero-foot"><span>从数字员工，到一条谱峰。<br>不同问题，各有自己的工作空间。</span><a href="https://projects.dxagent.cloud/">查看全部项目 <span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 
@@ -88,8 +98,8 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <p class="eyebrow">产品官网</p>
-          <h2 class="section-title" id="products-title">把想法，做成可以使用的工具</h2>
-          <p class="section-desc">从企业协作到创意与行业应用。每个产品都有独立页面，介绍能力、场景与工作流程。</p>
+          <h2 class="section-title" id="products-title">三个方向，一样认真。</h2>
+          <p class="section-desc">协作、创作与专业研究。先看看这三个产品，也可以从首屏或项目目录进入全部六个产品官网。</p>
         </div>
         <div class="project-grid">
           <!-- PRODUCT-CARDS -->
@@ -175,6 +185,17 @@
             </a>
           </div>
         </article>
+      </div>
+    </section>
+
+    <section class="section" id="journal" aria-labelledby="journal-title">
+      <div class="container">
+        <div class="section-head" data-reveal><p class="eyebrow">BUILD NOTES / 工程笔记</p><h2 class="section-title" id="journal-title">也记录，怎样把它做好。</h2><p class="section-desc">模型之外，工具、流程和安全边界同样决定一个 AI 产品能走多远。</p></div>
+        <div class="journal-grid">
+          <a class="journal-card" href="https://blog.dxagent.cloud/articles/tool-calling/" data-reveal><span>01 / 模型与工具</span><h3>让模型调用工具，怎样做得可靠？</h3><p>从工具定义到结果校验，理解一次完整的调用过程。</p></a>
+          <a class="journal-card" href="https://blog.dxagent.cloud/articles/ai-coding-workflow/" data-reveal><span>02 / 开发实践</span><h3>把 AI 编程变成可验收的流程。</h3><p>拆解任务、约束改动，用真实验证完成交付。</p></a>
+          <a class="journal-card" href="https://blog.dxagent.cloud/articles/ai-app-security/" data-reveal><span>03 / 安全边界</span><h3>工具越强，权限越要清楚。</h3><p>让模型建议、用户意图与真实执行各有边界。</p></a>
+        </div>
       </div>
     </section>
 
