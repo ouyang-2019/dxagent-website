@@ -59,4 +59,9 @@
 
 ## 发布
 
-使用现有 dxagent-website 仓库的四个 Cloudflare Pages 项目。最终发布状态和线上核验追加在本节；无需扩大 GitHub App 的仓库授权范围。
+已推送 9 个单一目的提交，发布代码提交为 `824cd4d00b105ac455a0abce64aa6630df5caf40`。四个 Cloudflare Pages 项目（dxagent-home / blog / apps / projects）在该提交上均构建成功，无需扩大 GitHub App 授权。
+
+- 正式域名下 18 页、17 个共享/专属样式与脚本资源全部 HTTP 200，文本与本地验收构建一致（统一换行后比对）。
+- 线上手机短剧菜单、标签页，以及 JSON 工具正常输入与非法输入反馈通过；主页显示六产品入口与暗色背景。
+- 正式站点：`https://dxagent.cloud/`、`https://blog.dxagent.cloud/`、`https://apps.dxagent.cloud/`、`https://projects.dxagent.cloud/`。
+- 线上检查证据在本地 `deployment-check.json`，正式站点截图在 `screenshots/live/`。
