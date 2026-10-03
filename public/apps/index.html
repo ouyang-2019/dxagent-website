@@ -45,16 +45,42 @@
   </header>
 
   <main id="main" tabindex="-1">
-    <section class="page-hero" id="top" aria-labelledby="page-title">
-      <div class="container">
-        <p class="eyebrow hero-item">DX Agent · 应用</p>
-        <h1 class="page-title hero-item" id="page-title">小工具,纯本地<span class="hero-dot" aria-hidden="true">.</span></h1>
-        <p class="hero-lede hero-item">一些即用即走的纯前端工具:打开网页就能用,所有处理都在你的浏览器里完成,不安装、不登录、不上传任何数据。</p>
-        <ul class="hero-meta hero-item" aria-label="应用站说明">
-          <li>纯前端实现</li>
-          <li>无需登录</li>
-          <li>数据不出浏览器</li>
-        </ul>
+    <section class="page-hero apps-hero" id="top" aria-labelledby="page-title">
+      <div class="container apps-hero-grid">
+        <div class="apps-hero-copy">
+          <p class="eyebrow hero-item">DX Agent · 应用</p>
+          <h1 class="page-title hero-item" id="page-title">小工具,纯本地<span class="hero-dot" aria-hidden="true">.</span></h1>
+          <p class="hero-lede hero-item">一些即用即走的纯前端工具:打开网页就能用,所有处理都在你的浏览器里完成,不安装、不登录、不上传任何数据。</p>
+          <div class="hero-actions hero-item">
+            <a class="btn btn-primary" href="json-tool/">
+              打开 JSON 工具
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#privacy">查看隐私说明</a>
+          </div>
+          <ul class="hero-meta hero-item" aria-label="应用站说明">
+            <li>纯前端实现</li>
+            <li>无需登录</li>
+            <li>数据不出浏览器</li>
+          </ul>
+        </div>
+
+        <div class="json-preview hero-item" aria-hidden="true">
+          <div class="preview-window">
+            <div class="preview-toolbar">
+              <span></span><span></span><span></span>
+              <strong>local-json</strong>
+            </div>
+            <div class="preview-code">
+              <span>{</span>
+              <span>  "site": "DX Agent",</span>
+              <span>  "mode": "browser-only",</span>
+              <span>  "upload": false</span>
+              <span>}</span>
+            </div>
+            <div class="preview-status">Valid JSON · 4 keys · 本地处理</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -87,7 +113,7 @@
       </div>
     </section>
 
-    <section class="section section-privacy" aria-labelledby="privacy-title">
+    <section class="section section-privacy" id="privacy" aria-labelledby="privacy-title">
       <div class="container">
         <div class="section-head" data-reveal>
           <p class="eyebrow">02 · 隐私</p>
