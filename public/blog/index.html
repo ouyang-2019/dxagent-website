@@ -45,20 +45,59 @@
   </header>
 
   <main id="main" tabindex="-1">
-    <section class="page-hero" id="top" aria-labelledby="page-title">
-      <div class="container">
-        <p class="eyebrow hero-item">DX Agent · 博客</p>
-        <h1 class="page-title hero-item" id="page-title">工程笔记<span class="hero-dot" aria-hidden="true">.</span></h1>
-        <p class="hero-lede hero-item">记录 AI 编程、模型工具调用、应用安全与项目建设。文章由 DX Agent 原创整理，并附上可查证的资料来源。</p>
-        <ul class="hero-meta hero-item" aria-label="博客说明">
-          <li>中文优先</li>
-          <li>事实可查证</li>
-          <li>持续更新</li>
-        </ul>
+    <section class="page-hero blog-hero" id="top" aria-labelledby="page-title">
+      <div class="container blog-hero-grid">
+        <div class="blog-hero-copy">
+          <p class="eyebrow hero-item">DX Agent · 博客</p>
+          <h1 class="page-title hero-item" id="page-title">工程笔记<span class="hero-dot" aria-hidden="true">.</span></h1>
+          <p class="hero-lede hero-item">记录 AI 编程、模型工具调用、应用安全与项目建设。文章由 DX Agent 原创整理，并附上可查证的资料来源。</p>
+          <div class="hero-actions hero-item">
+            <a class="btn btn-primary" href="articles/ai-coding-workflow/">
+              阅读精选文章
+              <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#posts">浏览全部文章</a>
+          </div>
+          <ul class="hero-meta hero-item" aria-label="博客说明">
+            <li>中文优先</li>
+            <li>事实可查证</li>
+            <li>持续更新</li>
+          </ul>
+        </div>
+
+        <aside class="blog-feature-panel hero-item" aria-label="精选工程笔记">
+          <p class="panel-kicker">FEATURED NOTE</p>
+          <h2>AI 编程工作流：从 Vibe 到可交付工程</h2>
+          <p>把 X 上关于代理式开发的讨论放进一套可执行流程：明确交付物、整理上下文、拆小任务、验证结果，再由人审查关键路径。</p>
+          <dl class="feature-meta">
+            <div><dt>日期</dt><dd>2026.10.01</dd></div>
+            <div><dt>主题</dt><dd>AI 编程 / 工作流</dd></div>
+          </dl>
+          <a class="project-link" href="articles/ai-coding-workflow/">进入文章 <span aria-hidden="true">→</span></a>
+        </aside>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="posts-title">
+    <section class="section section-featured" aria-labelledby="featured-title">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">精选文章</p>
+          <h2 class="section-title" id="featured-title">把灵感整理成能交付的工程步骤</h2>
+          <p class="section-desc">第一篇先聚焦本站最核心的方法论：AI 编程不是只靠提示词，而是把任务拆解、上下文、工具权限和验证流程放到同一张工作台上。</p>
+        </div>
+        <article class="featured-post" data-reveal>
+          <div class="featured-post-index" aria-hidden="true">01</div>
+          <div>
+            <p class="post-meta"><time datetime="2026-10-01">2026 年 10 月 1 日</time> · AI 编程</p>
+            <h3 class="project-title"><a class="post-title-link" href="articles/ai-coding-workflow/">AI 编程工作流：从 Vibe 到可交付工程</a></h3>
+            <p class="project-desc">把 X 上关于代理式开发的讨论放进一套可执行流程：明确交付物、整理上下文、拆小任务、验证结果，再由人审查关键路径。</p>
+            <a class="project-link" href="articles/ai-coding-workflow/">阅读全文 <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="posts" aria-labelledby="posts-title">
       <div class="container">
         <div class="section-head" data-reveal>
           <p class="eyebrow">01 · 文章列表</p>

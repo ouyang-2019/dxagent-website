@@ -3,20 +3,158 @@
    仅包含博客站专属布局;跨站共享组件见 styles.css。
    ============================================================ */
 
-/* ---------- 文章列表 ---------- */
+body {
+  background:
+    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 30rem),
+    linear-gradient(180deg, #0b0e14 0%, #0d121b 46%, #0b0e14 100%);
+  color: var(--ink);
+}
+
+.site-header {
+  background-color: color-mix(in srgb, var(--bg) 82%, transparent);
+}
+
+.brand-mark,
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--bg);
+}
+
+.blog-hero {
+  padding-block: clamp(56px, 8vw, 104px) clamp(32px, 5vw, 56px);
+}
+
+.blog-hero::before {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+}
+
+.blog-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
+  gap: clamp(32px, 6vw, 72px);
+  align-items: center;
+}
+
+.blog-feature-panel,
+.featured-post,
+.project-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), transparent 42%),
+    var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+.blog-feature-panel {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--radius-lg);
+}
+
+.blog-feature-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -18% -36% 22%;
+  height: 220px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 26%, transparent), transparent);
+  filter: blur(18px);
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.panel-kicker,
+.post-meta {
+  color: color-mix(in srgb, var(--accent) 78%, var(--muted));
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-feature-panel h2 {
+  position: relative;
+  margin-top: 18px;
+  max-width: 12ch;
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.blog-feature-panel p:not(.panel-kicker) {
+  position: relative;
+  margin-top: 20px;
+  color: var(--muted);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.feature-meta {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+}
+
+.feature-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.feature-meta dt,
+.feature-meta dd {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.feature-meta dt {
+  color: var(--ink-faint);
+}
+
+.feature-meta dd {
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+
+.section-featured {
+  padding-top: clamp(48px, 7vw, 80px);
+}
+
+.featured-post {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 32px);
+  max-width: 920px;
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--radius-lg);
+}
+
+.featured-post-index {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  color: var(--accent);
+  background-color: var(--accent-tint);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: 16px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
 
 .post-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
-  max-width: 760px;
 }
 
 .post-card .post-meta {
   margin-bottom: 12px;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: var(--ink-faint);
-  font-variant-numeric: tabular-nums;
 }
 
 .post-title-link {
@@ -30,23 +168,22 @@
 }
 
 .post-card .project-desc code {
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--ink);
   font-family: var(--font-mono);
   font-size: 0.875em;
-  padding: 2px 6px;
-  background-color: rgb(25 23 22 / 0.06);
-  border-radius: 6px;
 }
 
 .blog-note {
   margin-top: 36px;
-  max-width: 640px;
-  color: var(--ink-faint);
+  max-width: 720px;
+  color: var(--muted);
   font-size: 0.9375rem;
   line-height: 1.85;
   text-wrap: pretty;
 }
-
-/* ---------- 文章页 ---------- */
 
 .article-head {
   max-width: 760px;
@@ -57,7 +194,6 @@
   font-size: clamp(1.875rem, 4.5vw, 2.75rem);
   font-weight: 800;
   line-height: 1.2;
-  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 
@@ -66,9 +202,9 @@
   flex-wrap: wrap;
   gap: 6px 16px;
   margin-top: 20px;
+  color: var(--ink-faint);
   font-family: var(--font-mono);
   font-size: 0.875rem;
-  color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -80,13 +216,54 @@
   margin-inline: auto;
 }
 
+.prose {
+  color: var(--muted);
+}
+
+.prose code {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+
+.prose pre {
+  background-color: #080b10;
+  color: var(--ink);
+  outline: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .article-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: clamp(40px, 6vw, 56px);
-  padding-top: 28px;
-  border-top: 1px solid var(--line);
-  max-width: 720px;
   margin-inline: auto;
+  max-width: 720px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .blog-hero-grid,
+  .post-list {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-feature-panel {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 560px) {
+  .blog-feature-panel {
+    display: none;
+  }
+
+  .featured-post {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-post-index {
+    width: 48px;
+    height: 48px;
+  }
 }
