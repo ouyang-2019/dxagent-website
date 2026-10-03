@@ -86,10 +86,10 @@
           <h2>一个仓库,四个站点</h2>
           <p>所有站点的源码都在同一个仓库里,源码与页面内容托管在 <a href="https://github.com/ouyang-2019" target="_blank" rel="noopener noreferrer">GitHub 账号 ouyang-2019</a> 下。仓库里只有一个 <code>public/</code> 目录:根层级是主页,<code>blog/</code>、<code>apps/</code>、<code>projects/</code> 三个子目录各是一个子站。</p>
           <p>构建脚本是仓库根目录下的 <code>scripts/build.mjs</code>,本地执行:</p>
-          <pre tabindex="0" aria-label="????????????????"><code>node scripts/build.mjs</code></pre>
+          <pre tabindex="0" aria-label="代码示例，可横向滚动查看完整内容"><code>node scripts/build.mjs</code></pre>
           <p>它把 <code>public/</code> 拆分成 <code>dist/</code> 下的四个站点目录:主页文件进入 <code>dist/home</code>,三个子站目录分别复制到 <code>dist/blog</code>、<code>dist/apps</code>、<code>dist/projects</code>,并把共享的 <code>styles.css</code> 与 <code>main.js</code> 放进每个站点根部。这样每个子站都可以被独立部署,又共享同一套样式与交互。</p>
           <p>本地预览任意一个站点,只需要指向对应目录的静态服务,例如:</p>
-          <pre tabindex="0" aria-label="????????????????"><code>python -m http.server 4173 --directory dist/blog</code></pre>
+          <pre tabindex="0" aria-label="代码示例，可横向滚动查看完整内容"><code>python -m http.server 4173 --directory dist/blog</code></pre>
 
           <h2>托管方案:Cloudflare Pages</h2>
           <p>仓库的部署计划是在 Cloudflare Pages 中为同一 GitHub 仓库创建四个项目。每个项目的构建命令都是 <code>node scripts/build.mjs</code>；发布目录按站点分别填写 <code>dist/home</code>、<code>dist/blog</code>、<code>dist/apps</code> 和 <code>dist/projects</code>。先检查各项目的预览地址，再在对应项目中绑定 <code>dxagent.cloud</code> 或其子域。具体设置参考 <a href="https://developers.cloudflare.com/pages/configuration/monorepos/" target="_blank" rel="noopener noreferrer">Cloudflare Pages 多项目文档</a>和<a href="https://developers.cloudflare.com/pages/configuration/custom-domains/" target="_blank" rel="noopener noreferrer">自定义域名文档</a>。</p>
