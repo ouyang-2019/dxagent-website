@@ -15,10 +15,24 @@
 
 ```powershell
 node scripts/build.mjs
+node scripts/lint.mjs
+node scripts/verify.mjs
 python -m http.server 4173 --directory dist/home
 ```
 
-将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录。
+将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/tokens.css`、`public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录。
+
+公共视觉规范在 `public/tokens.css`；产品页的独立概念图在 `scripts/product-visuals.mjs`。均使用本地 CSS、SVG 与原生 JavaScript，不依赖远程字体或动画库。
+
+### 浏览器回归与截图
+
+`scripts/browser-check.mjs` 使用已有的 Playwright 安装，不会自动安装依赖。先启动四个本地站点（只监听 `127.0.0.1`，端口依次为 50213–50216），再运行：
+
+```powershell
+node scripts/browser-check.mjs --playwright <Playwright模块绝对路径> --chrome <Chrome程序绝对路径>
+```
+
+脚本覆盖 18 页的 390 / 768 / 1440 布局、资源、页内链接，以及菜单、标签页、FAQ、JSON 操作、剪贴板回退、无 JavaScript 和减少动效状态。截图与运行证据保存在 `screenshots/after/`；原始对照保存在 `screenshots/before/`。这些本地验收图片不发布到网站。
 
 ## Cloudflare Pages 配置
 
@@ -30,7 +44,7 @@ Cloudflare 的 [monorepo 文档](https://developers.cloudflare.com/pages/configu
 
 - 产品官网由 `scripts/product-data.mjs` 的公开介绍与 `scripts/product-sites.mjs` 生成，统一部署在项目站：`/aubeau/`、`/super-lovart/`、`/xuanjian/`、`/ai-cosmetics/`、`/shortdrama/`、`/fragrance/`。
 - 官网仅介绍产品与工作流程，使用虚构界面示意；不包含私有项目源码、客户资料、生产配置或在线模型执行服务。原项目继续由各自的仓库管理。
-- AUBEAU 的 Clawith 衍生部分、SUPER LOVART 的 Loomic 来源、短剧工厂的 LocalMiniDrama 来源分别在页面保留对应许可与署名说明。
+- AUBEAU 的 Clawith 衍生部分、SUPER LOVART 的 Loomic 来源、短剧工厂的 LocalMiniDrama 与 Toonflow 来源分别在页面保留对应许可与署名说明。
 - [SkillGene](https://github.com/ouyang-2019/SkillGene) 与 [niu-lai-video-translator](https://github.com/ouyang-2019/niu-lai-video-translator) 是主页和项目站的主要作品。
 - [OpenStock-Enhanced](https://github.com/ouyang-2019/OpenStock-Enhanced) 基于 [Open Dev Society 的 OpenStock](https://github.com/Open-Dev-Society/OpenStock) 增强，在页面中单独列出并注明 AGPL-3.0 与上游作者。
 - 博客文章以公开资料为研究线索，使用原创叙述和可点击来源；不复制 X 帖或其他作者的长篇正文。

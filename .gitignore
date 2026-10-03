@@ -3,6 +3,11 @@
 .external-worker/
 node_modules/
 dist/
+.playwright-mcp/
+screenshots/
+docs/visual-audit/*.png
+docs/visual-audit/*.log
+docs/visual-audit/*.json
 .env
 .env.*
 !.env.example
