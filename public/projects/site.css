@@ -3,7 +3,154 @@
    仅包含项目站专属布局;跨站共享组件见 styles.css。
    ============================================================ */
 
-/* ---------- 项目卡片内的链接组 ---------- */
+body {
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, #b6a0ff 15%, transparent), transparent 28rem),
+    radial-gradient(circle at 84% 8%, color-mix(in srgb, #9ad7ac 12%, transparent), transparent 24rem),
+    linear-gradient(180deg, #0b0e14 0%, #0d121b 48%, #0b0e14 100%);
+  color: var(--ink);
+}
+
+.site-header {
+  background-color: color-mix(in srgb, var(--bg) 82%, transparent);
+}
+
+.brand-mark,
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--bg);
+}
+
+.projects-hero {
+  padding-block: clamp(56px, 8vw, 104px) clamp(32px, 5vw, 56px);
+}
+
+.projects-hero::before {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+}
+
+.projects-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+  gap: clamp(32px, 6vw, 72px);
+  align-items: center;
+}
+
+.category-jumps,
+.product-category-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-jumps {
+  margin-top: 32px;
+}
+
+.category-jumps a,
+.product-category-strip a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  color: var(--ink);
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out), border-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+.category-jumps a:hover,
+.product-category-strip a:hover {
+  transform: translateY(-2px);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.project-gallery-preview {
+  position: relative;
+  min-height: 360px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), transparent 42%),
+    var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.gallery-card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 132px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background-color: var(--surface-raised);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 0.28);
+}
+
+.gallery-card span {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.gallery-card strong {
+  color: var(--ink);
+  font-size: 1.125rem;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.gallery-card-a {
+  inset: 28px auto auto 28px;
+  width: 58%;
+  border-color: color-mix(in srgb, #b6a0ff 34%, transparent);
+}
+
+.gallery-card-b {
+  inset: 118px 28px auto auto;
+  width: 54%;
+  border-color: color-mix(in srgb, #d5f66a 30%, transparent);
+}
+
+.gallery-card-c {
+  inset: auto auto 28px 56px;
+  width: 62%;
+  border-color: color-mix(in srgb, #ffa5bc 30%, transparent);
+}
+
+.product-category-strip {
+  margin-bottom: 24px;
+}
+
+.project-card:not(.product-card),
+.oss-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), transparent 42%),
+    var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+.product-grid .project-card:nth-child(6n + 1) { --accent: #b6a0ff; }
+.product-grid .project-card:nth-child(6n + 2) { --accent: #d5f66a; }
+.product-grid .project-card:nth-child(6n + 3) { --accent: #e8c180; }
+.product-grid .project-card:nth-child(6n + 4) { --accent: #ffa5bc; }
+.product-grid .project-card:nth-child(6n + 5) { --accent: #ff9667; }
+.product-grid .project-card:nth-child(6n + 6) { --accent: #9ad7ac; }
+
+.project-card:not(.product-card):hover {
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+}
 
 .card-actions {
   display: flex;
@@ -17,12 +164,10 @@
   margin-top: 0;
 }
 
-/* ---------- 项目详情:技术信息 ---------- */
-
 .spec-list {
   margin: 0;
   max-width: 720px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--border);
 }
 
 .spec-list > div {
@@ -30,7 +175,7 @@
   grid-template-columns: 160px 1fr;
   gap: 4px 24px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--border);
 }
 
 .spec-list dt {
@@ -51,13 +196,24 @@
   font-weight: 600;
 }
 
-@media (max-width: 480px) {
-  .spec-list > div {
-    grid-template-columns: 1fr;
-  }
+.oss-card {
+  padding: clamp(24px, 3.5vw, 40px);
+  border-radius: var(--radius-lg);
 }
 
-/* ---------- 项目详情:首屏标签 ---------- */
+.oss-badge {
+  background-color: var(--accent-tint);
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--accent);
+}
+
+.oss-credit {
+  color: var(--muted);
+}
+
+.oss-actions .btn-ghost {
+  background-color: rgba(255, 255, 255, 0.05);
+}
 
 .page-hero .tag-list {
   margin-top: 24px;
@@ -65,4 +221,39 @@
 
 .prose .spec-list {
   margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .projects-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-gallery-preview {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 560px) {
+  .project-gallery-preview {
+    min-height: auto;
+    padding: 14px;
+  }
+
+  .gallery-card {
+    position: relative;
+    inset: auto;
+    width: auto;
+    min-height: 72px;
+    padding: 14px;
+  }
+
+  .gallery-card + .gallery-card {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .spec-list > div {
+    grid-template-columns: 1fr;
+  }
 }
