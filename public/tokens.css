@@ -1,0 +1,31 @@
+/* Shared design values; fonts stay local. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0e14;
+  --surface: #131925;
+  --surface-raised: #1a2332;
+  --ink: #edf2fa;
+  --muted: #a5b2c4;
+  --accent: #67e8f9;
+  --border: rgb(255 255 255 / 0.12);
+  --success: #9ad7ac;
+  --warning: #e8c180;
+  --error: #ff9c9c;
+  --radius: 10px;
+  --radius-lg: 24px;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --paper: var(--bg);
+  --paper-raise: var(--surface);
+  --ink-soft: #bdc8d8;
+  --ink-faint: var(--muted);
+  --line: var(--border);
+  --line-strong: rgb(255 255 255 / 0.25);
+  --accent-deep: #b7f5ff;
+  --accent-tint: rgb(103 232 249 / 0.08);
+  --shadow-card: 0 8px 32px rgb(0 0 0 / 0.18);
+  --shadow-card-hover: 0 16px 48px rgb(0 0 0 / 0.28);
+  --radius-card: 16px;
+  --radius-inner: var(--radius);
+}

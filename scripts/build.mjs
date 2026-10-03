@@ -9,7 +9,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "public");
 const output = join(root, "dist");
 const sites = ["home", "blog", "apps", "projects"];
-const sharedFiles = ["styles.css", "main.js"];
+const sharedFiles = ["tokens.css", "styles.css", "main.js"];
 
 // Keep the generated-file cleanup pinned to this repository's dist directory.
 if (dirname(output) !== root || output === root) {
