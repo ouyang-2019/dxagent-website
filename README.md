@@ -20,9 +20,15 @@ node scripts/verify.mjs
 python -m http.server 4173 --directory dist/home
 ```
 
-将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/tokens.css`、`public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录。
+将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/tokens.css`、`public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录，并把主页需要的 `public/scene/` 与 `public/vendor/` 复制到 `dist/home`。
 
 公共视觉规范在 `public/tokens.css`；产品页的独立概念图在 `scripts/product-visuals.mjs`。均使用本地 CSS、SVG 与原生 JavaScript，不依赖远程字体或动画库。
+
+### 主页 3D 星系
+
+主页首屏的产品入口是一个 WebGL 星系（`public/scene/`），6 个产品链接作为轨道节点标签。它在浏览器空闲后按需加载，减少动效、省流量模式、无 WebGL 或无 JavaScript 时保留原 6 宫格。可调参数集中在 `public/scene/config.mjs`；调试时可在网址后加 `?quality=off|low|high`。架构与降级规则见 `docs/3d/architecture.md`。
+
+Three.js（MIT）以按需子集的形式放在 `public/vendor/three/`，由开发期脚本 `node scripts/vendor-three.mjs` 生成（需联网，使用 `npm pack` 与 `npx esbuild`），版本、体积与 SHA-256 记录在同目录 `VERSION.md`。站点运行时仍无 npm 依赖、无 CDN 请求。
 
 ### 浏览器回归与截图
 

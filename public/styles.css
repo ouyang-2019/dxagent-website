@@ -68,6 +68,36 @@ img { max-width: 100%; }
 .map-project-type { color: var(--muted); font-size: 12px; padding: 0 10px 10px; }
 .map-caption { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 16px; color: var(--muted); }
 .map-caption i { width: 5px; height: 5px; background: var(--success); border-radius: 50%; }
+/* 3D galaxy mode (scene/engine.mjs adds .is-3d): the six links become orbit labels. */
+.studio-map.is-3d { aspect-ratio: 1 / var(--map-ratio); padding: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 46%, rgb(103 232 249 / 0.08), transparent 60%), linear-gradient(150deg, #121926, #0b0f17 70%); }
+.map-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 600ms var(--ease-out); }
+.studio-map.is-ready .map-canvas { opacity: 1; }
+.studio-map.is-3d .map-bar { position: absolute; z-index: 2; inset: 20px 20px auto; margin: 0; }
+.studio-map.is-3d .map-caption { position: absolute; z-index: 2; inset: auto 20px 16px; margin: 0; }
+.studio-map.is-3d .map-grid { position: absolute; z-index: 3; inset: 0; display: block; pointer-events: none; }
+.studio-map.is-3d .map-project { position: absolute; z-index: 1; top: 0; left: 0; display: grid; align-content: center; min-height: 44px; padding: 6px 14px 6px 26px; border-color: rgb(255 255 255 / 0.12); border-radius: 999px; background: rgb(11 14 20 / 0.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); pointer-events: auto; will-change: transform; transition: opacity 300ms var(--ease-out), border-color 200ms, background-color 200ms; }
+.studio-map.is-3d .map-project::before { content: ""; position: absolute; top: 50%; left: 11px; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--product-accent); box-shadow: 0 0 10px var(--product-accent); }
+.studio-map.is-3d .map-project .cover-art { display: none; }
+.studio-map.is-3d .map-project-name { min-height: 0; padding: 0; font-size: 13px; line-height: 1.35; white-space: nowrap; }
+.studio-map.is-3d .map-project-type { padding: 0; font-size: 11px; line-height: 1.35; white-space: nowrap; }
+.studio-map.is-3d .map-project:hover, .studio-map.is-3d .map-project:focus-visible { z-index: 2; opacity: 1; border-color: var(--product-accent); background: rgb(11 14 20 / 0.88); }
+.studio-map.is-3d .map-project.is-behind { z-index: 0; opacity: 0.6; }
+.studio-map.is-loading .map-grid, .studio-map.is-loading .map-caption { visibility: hidden; }
+.map-pause { margin-left: auto; min-height: 32px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); background: rgb(11 14 20 / 0.6); font: 11px/1.4 var(--font-mono); cursor: pointer; transition: color 160ms, border-color 160ms; }
+.map-pause:hover, .map-pause[aria-pressed="true"] { color: var(--ink); border-color: var(--line-strong); }
+.studio-map.is-static-labels .map-bar { inset: 12px 12px auto; }
+.studio-map.is-static-labels .map-caption { inset: auto 12px 12px; }
+.studio-map.is-static-labels .map-grid { inset: auto 12px 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.studio-map.is-static-labels .map-project { position: relative; padding: 6px 8px 6px 22px; border-radius: 10px; }
+.studio-map.is-static-labels .map-project::before { left: 9px; }
+.studio-map.is-static-labels .map-project-name { font-size: 12px; white-space: normal; }
+.studio-map.is-static-labels .map-project-type { display: none; }
+@media (max-width: 560px) {
+  .studio-map.is-3d-pending, .studio-map.is-3d { height: 440px; }
+  .studio-map.is-3d { aspect-ratio: auto; }
+  .studio-map.is-3d-pending:not(.is-3d) { display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 26%, rgb(103 232 249 / 0.1), transparent 55%), linear-gradient(150deg, #121926, #0b0f17 70%); }
+  .studio-map.is-3d-pending:not(.is-3d) .map-grid { margin-top: auto; }
+}
 .hero-foot { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-top: 56px; color: var(--muted); font-size: 13px; }
 .hero-foot a { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; text-decoration: none; color: var(--ink); }
 .hero-item { animation: enter 500ms var(--ease-out) both; }
