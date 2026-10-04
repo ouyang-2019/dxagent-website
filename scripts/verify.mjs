@@ -28,6 +28,20 @@ for (const site of sites) {
   }
 
   for await (const file of files(siteRoot)) {
+    if (extname(file) === ".mjs" || extname(file) === ".js") {
+      // Static and dynamic relative imports must resolve inside the site.
+      const source = await readFile(file, "utf8");
+      for (const [, , specifier] of source.matchAll(/\b(?:from|import)\s*\(?\s*(["'])(\.{1,2}\/[^"']+)\1/g)) {
+        const target = resolve(dirname(file), specifier);
+        const inside = relative(siteRoot, target);
+        if (inside.startsWith(`..${sep}`) || inside === ".." || isAbsolute(inside)) {
+          errors.push(`${file}: import escapes site root: ${specifier}`);
+        } else if (!(await stat(target).catch(() => null))?.isFile()) {
+          errors.push(`${file}: broken module import: ${specifier}`);
+        }
+      }
+      continue;
+    }
     if (extname(file) !== ".html") continue;
     pageCount += 1;
     const html = await readFile(file, "utf8");

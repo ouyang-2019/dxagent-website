@@ -10,6 +10,8 @@ const source = join(root, "public");
 const output = join(root, "dist");
 const sites = ["home", "blog", "apps", "projects"];
 const sharedFiles = ["tokens.css", "styles.css", "main.js"];
+// Module directories under public/ that a site loads at runtime.
+const sharedDirectories = { home: ["scene", "vendor"] };
 
 // Keep the generated-file cleanup pinned to this repository's dist directory.
 if (dirname(output) !== root || output === root) {
@@ -53,6 +55,9 @@ for (const site of sites) {
     for (const file of sharedFiles) {
       await cp(join(source, file), join(destination, file));
     }
+  }
+  for (const directory of sharedDirectories[site] ?? []) {
+    await cp(join(source, directory), join(destination, directory), { recursive: true });
   }
   if (site === "projects") {
     await renderProductSites({ products, output: destination });
