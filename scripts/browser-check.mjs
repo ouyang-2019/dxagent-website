@@ -36,6 +36,31 @@ function check(name, actual, expected = true) {
   evidence.checks.push({ name, passed: true });
 }
 
+// Layout shift since navigation plus the 3D map's accessibility state.
+async function galaxyState(page) {
+  return page.evaluate(() => Promise.race([
+    new Promise(done => {
+      let shift = 0;
+      const observer = new PerformanceObserver(list => {
+        for (const entry of list.getEntries()) if (!entry.hadRecentInput) shift += entry.value;
+      });
+      observer.observe({ type: "layout-shift", buffered: true });
+      setTimeout(() => {
+        observer.disconnect();
+        const map = document.querySelector(".studio-map");
+        const canvas = map?.querySelector(".map-canvas");
+        done({
+          shift,
+          hidden: canvas?.getAttribute("aria-hidden") ?? null,
+          pointer: canvas ? getComputedStyle(canvas).pointerEvents : null,
+          links: [...(map?.querySelectorAll("a.map-project") ?? [])].filter(a => a.href.startsWith("https://projects.dxagent.cloud/")).length,
+        });
+      }, 300);
+    }),
+    new Promise((_, fail) => setTimeout(() => fail(new Error("galaxy state timeout")), 5000)),
+  ]));
+}
+
 async function revealAll(page) {
   await page.evaluate(() => document.fonts.ready);
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
@@ -60,6 +85,15 @@ try {
       page.on("pageerror", onError);
       page.on("response", onResponse);
       const response = await page.goto(origins[site] + path, { waitUntil: "networkidle" });
+      if (name === "home") {
+        await page.waitForSelector('.studio-map[data-scene="mounted"]', { timeout: 8000 });
+        await page.waitForTimeout(300);
+        const galaxy = await galaxyState(page);
+        check(`home/${width}: 3D canvas hidden from assistive tech`, galaxy.hidden, "true");
+        check(`home/${width}: 3D canvas ignores pointer`, galaxy.pointer, "none");
+        check(`home/${width}: six product links kept`, galaxy.links, 6);
+        check(`home/${width}: layout shift below 0.05`, galaxy.shift < 0.05);
+      }
       await revealAll(page);
       const metrics = await page.evaluate(() => {
         const ids = [...document.querySelectorAll("[id]")].map(el => el.id);
@@ -172,6 +206,45 @@ try {
   check("JSON: user data never sent", network, []);
   await context.close();
 
+  {
+    // 3D galaxy: quality switches, focus pauses the orbit, context loss restores the grid.
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(origins.home + "/?quality=off");
+    check("galaxy: quality=off skips 3D", await page.locator(".studio-map").getAttribute("data-scene"), "off");
+    check("galaxy: quality=off keeps grid", await page.locator(".studio-map canvas").count(), 0);
+    await page.goto(origins.home + "/?quality=low");
+    await page.waitForSelector('.studio-map[data-scene="mounted"]', { timeout: 8000 });
+    check("galaxy: quality=low mounts", await page.locator(".studio-map canvas").count(), 1);
+    await page.goto(origins.home + "/");
+    await page.waitForSelector('.studio-map[data-scene="mounted"]', { timeout: 8000 });
+    const pause = page.locator(".map-pause");
+    await pause.click();
+    check("galaxy: pause control pressed", await pause.getAttribute("aria-pressed"), "true");
+    await pause.click();
+    check("galaxy: pause control resumes", await pause.getAttribute("aria-pressed"), "false");
+    const label = page.locator('.map-project[data-product="aubeau"]');
+    await label.focus();
+    await page.waitForTimeout(2500);
+    const first = await label.evaluate(el => el.style.transform);
+    await page.waitForTimeout(500);
+    check("galaxy: focus pauses orbit", await label.evaluate(el => el.style.transform), first);
+    await page.keyboard.press("Tab");
+    check("galaxy: labels keyboard reachable", await page.evaluate(() => document.activeElement.classList.contains("map-project")));
+    await page.evaluate(() => {
+      const canvas = document.querySelector(".map-canvas");
+      (canvas.getContext("webgl2") || canvas.getContext("webgl")).getExtension("WEBGL_lose_context").loseContext();
+    });
+    await page.waitForTimeout(300);
+    check("galaxy: context loss restores grid", await page.evaluate(() => !document.querySelector(".map-canvas") && !document.querySelector(".map-pause") && !document.querySelector(".studio-map").classList.contains("is-3d")));
+    check("galaxy: context loss shows covers", await page.locator(".studio-map .cover-art").first().isVisible());
+    check("galaxy: context loss clears label transforms", await page.evaluate(() => [...document.querySelectorAll(".map-project")].every(a => !a.style.transform)));
+    check("galaxy: no page errors", errors, []);
+    await context.close();
+  }
+
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, reducedMotion: "reduce", viewport: { width: 390, height: 900 } });
     const page = await context.newPage();
@@ -179,6 +252,11 @@ try {
       await page.goto(origins[site] + path);
       check(`${name}: content visible with JS ${javaScriptEnabled}`, await page.locator("h1").isVisible());
       check(`${name}: reduced motion with JS ${javaScriptEnabled}`, await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), "auto");
+      if (name === "home") {
+        if (javaScriptEnabled) check("home: reduced motion skips 3D", await page.locator(".studio-map").getAttribute("data-scene"), "off");
+        check(`home: reduced motion keeps grid with JS ${javaScriptEnabled}`, await page.locator(".studio-map canvas").count(), 0);
+        check(`home: grid covers visible with JS ${javaScriptEnabled}`, await page.locator(".studio-map .cover-art").first().isVisible());
+      }
       if (!javaScriptEnabled) {
         check(`${name}: no-JS nav visible`, await page.locator(".site-header nav a").first().isVisible());
         if (path !== "/") check(`${name}: all no-JS demo states available`, await page.getByRole("tabpanel").count(), 3);
