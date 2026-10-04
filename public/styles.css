@@ -129,6 +129,12 @@ img { max-width: 100%; }
 .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .project-card { display: flex; flex-direction: column; min-width: 0; padding: 28px; border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--surface); transition: transform 200ms var(--ease-out), border-color 200ms, box-shadow 200ms; }
 .project-card:hover { transform: translateY(-3px); border-color: var(--line-strong); box-shadow: var(--shadow-card-hover); }
+/* Pointer tilt and glare; main.js enables it only for fine pointers without reduced motion. */
+.project-card { position: relative; }
+.project-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgb(255 255 255 / 0.07), transparent 55%); transition: opacity 200ms; }
+.project-card.is-tilting::after { opacity: 1; }
+.project-card.is-tilting, .js .project-card.is-tilting.is-visible { transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-3px); }
+.js .project-card.is-tilting { transition: transform 80ms linear, border-color 200ms, box-shadow 200ms; }
 .product-card { padding: 0; overflow: hidden; }
 .product-card-body { display: flex; flex: 1; flex-direction: column; padding: 24px; }
 .product-card:hover { border-color: color-mix(in srgb, var(--product-accent) 50%, transparent); }

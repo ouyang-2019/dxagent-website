@@ -154,4 +154,27 @@
       }
     });
   }
+
+  /* ---------- 卡片指针倾斜与高光(仅精细指针) ---------- */
+
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+  if (finePointer.matches && !reduceMotion.matches) {
+    Array.prototype.forEach.call(doc.querySelectorAll(".project-card"), function (card) {
+      card.addEventListener("pointermove", function (event) {
+        if (reduceMotion.matches) return;
+        var rect = card.getBoundingClientRect();
+        var x = (event.clientX - rect.left) / rect.width;
+        var y = (event.clientY - rect.top) / rect.height;
+        card.style.setProperty("--tilt-x", ((0.5 - y) * 5).toFixed(2) + "deg");
+        card.style.setProperty("--tilt-y", ((x - 0.5) * 6).toFixed(2) + "deg");
+        card.style.setProperty("--glare-x", (x * 100).toFixed(1) + "%");
+        card.style.setProperty("--glare-y", (y * 100).toFixed(1) + "%");
+        card.classList.add("is-tilting");
+      });
+      card.addEventListener("pointerleave", function () {
+        card.classList.remove("is-tilting");
+      });
+    });
+  }
 })();
