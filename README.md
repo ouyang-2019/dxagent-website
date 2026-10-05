@@ -22,6 +22,8 @@ python -m http.server 4173 --directory dist/home
 
 将最后一条命令的目录改为 `dist/blog`、`dist/apps` 或 `dist/projects`，即可分别预览另外三个站点。构建脚本把 `public/tokens.css`、`public/styles.css` 和 `public/main.js` 复制到每个站点的输出目录，并把主页需要的 `public/scene/` 与 `public/vendor/` 复制到 `dist/home`。
 
+构建还会为每个站点生成 `robots.txt`、`sitemap.xml` 和 `404.html`，并向每个页面写入 JSON-LD 结构化数据（`scripts/site-metadata.mjs`，站点域名与署名在 `scripts/site-config.mjs`）。结构化数据的内容取自页面自身的标题、描述、日期和产品资料，不另行维护。顶层 `404.html` 不能删：没有它，Cloudflare Pages 会把所有不存在的路径当作首页返回。
+
 公共视觉规范在 `public/tokens.css`；产品页的独立概念图在 `scripts/product-visuals.mjs`。均使用本地 CSS、SVG 与原生 JavaScript，不依赖远程字体或动画库。
 
 ### 主页 3D 星系

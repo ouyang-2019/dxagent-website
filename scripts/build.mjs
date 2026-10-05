@@ -4,11 +4,12 @@ import { fileURLToPath } from "node:url";
 import { products } from "./product-data.mjs";
 import { renderProductSites } from "./product-sites.mjs";
 import { renderProductCards, renderProductMap } from "./product-cards.mjs";
+import { sites } from "./site-config.mjs";
+import { injectStructuredData, writeSiteFiles } from "./site-metadata.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "public");
 const output = join(root, "dist");
-const sites = ["home", "blog", "apps", "projects"];
 const sharedFiles = ["tokens.css", "styles.css", "main.js"];
 // Module directories under public/ that a site loads at runtime.
 const sharedDirectories = { home: ["scene", "vendor"] };
@@ -70,5 +71,7 @@ for (const site of sites) {
     const rendered = html.replace("<!-- PRODUCT-CARDS -->", renderProductCards(featured, site === "home" ? "https://projects.dxagent.cloud/" : ""));
     await writeFile(indexFile, site === "home" ? rendered.replace("<!-- PRODUCT-MAP -->", renderProductMap(products)) : rendered);
   }
+  await injectStructuredData({ site, destination, products });
+  await writeSiteFiles({ site, destination });
   console.log(`${site}: ${destination}`);
 }
